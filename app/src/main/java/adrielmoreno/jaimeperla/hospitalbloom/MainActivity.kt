@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val intent
 
         val txtNombresPaciente = findViewById<EditText>(R.id.txtNombresPaciente)
         val txtApellidos = findViewById<EditText>(R.id.txtApellidos)

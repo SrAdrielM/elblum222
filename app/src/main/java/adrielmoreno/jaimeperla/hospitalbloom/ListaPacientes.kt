@@ -1,5 +1,6 @@
 package adrielmoreno.jaimeperla.hospitalbloom
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +21,9 @@ class ListaPacientes : AppCompatActivity() {
 
         val btnAgregarPaciente = findViewById<Button>(R.id.btnAgregar)
 
-        val intent = Intent(this, MainActivity::.java)
+        btnAgregarPaciente.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

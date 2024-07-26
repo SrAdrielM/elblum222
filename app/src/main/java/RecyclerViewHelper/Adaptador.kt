@@ -21,7 +21,7 @@ class PacienteAdapter(private val pacientes: List<dataClassPaciente>, private va
 
     override fun onBindViewHolder(holder: PacienteViewHolder, position: Int) {
         val paciente = pacientes[position]
-        val medicina = medicinas[position] // Aquí se asume que hay una correspondencia uno a uno entre pacientes y medicinas
+        val medicina = medicinas[position]
         holder.bind(paciente)
         holder.itemView.setOnClickListener {
             showPatientInfoDialog(paciente, medicina)

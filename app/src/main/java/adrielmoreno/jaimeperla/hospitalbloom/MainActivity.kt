@@ -3,6 +3,7 @@ package adrielmoreno.jaimeperla.hospitalbloom
 import Modelo.ClaseConcexion
 import Modelo.dataClassMedicina
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Button
@@ -50,6 +51,11 @@ class MainActivity : AppCompatActivity() {
 
         txtFechaNacimiento.inputType = InputType.TYPE_NULL
         txtFechaNacimiento.setOnClickListener {
+        }
+
+        icRegresar.setOnClickListener {
+            val intent = Intent(this, ListaPacientes::class.java)
+            startActivity(intent)
         }
 
        btnAgregarPacientes.setOnClickListener {

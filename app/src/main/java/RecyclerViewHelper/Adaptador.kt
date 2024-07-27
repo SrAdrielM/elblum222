@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class PacienteAdapter(private val pacientes: List<dataClassPaciente>, private val context: Context, private val medicinas: List<dataClassMedicina>) :
+class PacienteAdapter(private var pacientes: List<dataClassPaciente>, private val context: Context, private val medicinas: List<dataClassMedicina>) :
     RecyclerView.Adapter<PacienteAdapter.PacienteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PacienteViewHolder {

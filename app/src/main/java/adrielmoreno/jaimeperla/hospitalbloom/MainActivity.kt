@@ -2,6 +2,7 @@ package adrielmoreno.jaimeperla.hospitalbloom
 
 import Modelo.ClaseConcexion
 import Modelo.dataClassMedicina
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -48,11 +50,6 @@ class MainActivity : AppCompatActivity() {
         val icRegresar = findViewById<ImageView>(R.id.icRegresar)
         val btnAgregarPacientes = findViewById<Button>(R.id.btnAgregarPaciente)
         val btnAgregarMedicamentos = findViewById<Button>(R.id.btnMedeicamento)
-
-
-        btnAgregarMedicamentos.setOnClickListener {
-
-        }
 
         txtFechaNacimiento.inputType = InputType.TYPE_NULL
         txtFechaNacimiento.setOnClickListener {
@@ -139,8 +136,45 @@ class MainActivity : AppCompatActivity() {
            }
 
        }
+        btnAgregarMedicamentos.setOnClickListener {
+            val alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setTitle("Ingrese el nombre de la medicina")
+
+            val layout = LinearLayout(this)
+            layout.orientation = LinearLayout.VERTICAL
+
+            val txtinputMedicina = EditText(this)
+            txtinputMedicina.hint = "Nombre de la medicina"
+            layout.addView(txtinputMedicina)
+
+            alertDialogBuilder.setView(layout)
+
+            alertDialogBuilder.setPositiveButton("Guardar") { dialog, which ->
+                val nombreMedicina = txtinputMedicina.text.toString().trim()
+                if (nombreMedicina.isNotEmpty()) {
+                    val objConexion = ClaseConcexion().CadenaConexion()
+                    val addPaciente = objConexion?.prepareStatement("INSERT INTO Medicamento (UUID_Medicamento, Nombre_medicamento,)VALUES (?,?)")!!
+                    addPaciente.setString(1, UUID.randomUUID().toString())
+                    addPaciente.setString(2,txtinputMedicina.text.toString())
+                    Toast.makeText(this, "Medicina ingresada: $nombreMedicina", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Complete el campo", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            alertDialogBuilder.setNegativeButton("Cancelar") { dialog, which ->
+                dialog.dismiss()
+            }
+
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
     }
 }
+
+
+
+
 
 fun getMedicina(): List<dataClassMedicina>{
     val conexion = ClaseConcexion().CadenaConexion()

@@ -1,6 +1,7 @@
 package RecyclerViewHelpers
 
 import Modelo.ClaseConcexion
+import Modelo.dataClassCombinados
 import Modelo.dataClassPaciente
 import adrielmoreno.jaimeperla.hospitalbloom.R
 import android.app.AlertDialog
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
 
-class Adaptador(var Datos: List<dataClassPaciente>) : RecyclerView.Adapter<ViewHolder>() {
+class Adaptador(var Datos: List<dataClassCombinados>) : RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // Inflate the card layout
         val vista = LayoutInflater.from(parent.context).inflate(R.layout.activity_card, parent, false)
@@ -105,7 +106,7 @@ class Adaptador(var Datos: List<dataClassPaciente>) : RecyclerView.Adapter<ViewH
         holder.txtApellidosCard.text = item.apellidos
         holder.txtMedicamentoCardHora.text = item.horaAplicacion
         holder.txtEnfermedadCard.text = item.enfermedad
-        holder.txtMedicamentoCard.text = item.medicamento
+        holder.txtMedicamentoCard.text = item.Nombre_medicamento
 
         holder.icBorrar.setOnClickListener {
             eliminarPaciente(item.uuid_pacinete)

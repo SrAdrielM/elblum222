@@ -1,6 +1,7 @@
 package adrielmoreno.jaimeperla.hospitalbloom
 
 import Modelo.ClaseConcexion
+import Modelo.dataClassCombinados
 import Modelo.dataClassPaciente
 import RecyclerViewHelpers.Adaptador
 import android.content.Intent
@@ -59,16 +60,37 @@ class ListaPacientes : AppCompatActivity() {
         }
     }
 
-    private fun obtenerPacientes(): List<dataClassPaciente> {
+    private fun obtenerPacientes(): List<dataClassCombinados> {
         val objConexion = ClaseConcexion().CadenaConexion() ?: return emptyList()
-        val listaPacientes = mutableListOf<dataClassPaciente>()
+        val listaPacientes = mutableListOf<dataClassCombinados>()
 
         try {
             val statement = objConexion.createStatement()
-            val resultSet = statement.executeQuery("SELECT * FROM paciente")
+            val resultSet = statement.executeQuery("""
+            SELECT 
+                p.UUID_Paciente,
+                p.Nombres,
+                p.Apellidos,
+                p.Edad,
+                p.Efermedad,
+                p.Fecha_Nacimiento,
+                p.numero_habitacion,
+                p.numero_cama,
+                m.Nombre_medicamento,
+                p.hora_aplicacion,
+                p.medicamento_adiccional
+            FROM 
+                paciente p
+            INNER JOIN 
+                Medicamento m
+            ON 
+                p.UUID_Medicamento = m.UUID_Medicamento
+        """)
 
             while (resultSet.next()) {
-                val uuid = resultSet.getString("UUID_Paciente")
+                val uuidM = resultSet.getString("UUID_Medicamento")
+                val nombreMedicamento = resultSet.getString("Nombre_medicamento")
+                val uuidP = resultSet.getString("UUID_Paciente")
                 val nombres = resultSet.getString("Nombres")
                 val apellidos = resultSet.getString("Apellidos")
                 val edad = resultSet.getInt("Edad")
@@ -76,13 +98,14 @@ class ListaPacientes : AppCompatActivity() {
                 val nacimiento = resultSet.getString("Fecha_Nacimiento")
                 val habitacion = resultSet.getInt("numero_habitacion")
                 val cama = resultSet.getInt("numero_cama")
-                val medicamento = resultSet.getString("UUID_Medicamento")
-                val horaaplicacion = resultSet.getString("hora_aplicacion")
-                val medicamentoextra = resultSet.getString("medicamento_adiccional")
+                val horaAplicacion = resultSet.getString("hora_aplicacion")
+                val medicamentoExtra = resultSet.getString("medicamento_adiccional")
 
-                val paciente = dataClassPaciente(uuid, nombres, apellidos, edad, enfermedad, nacimiento, habitacion, cama, medicamento, horaaplicacion, medicamentoextra)
+                val pacienteConMedicamento = dataClassCombinados(uuidM, nombreMedicamento, uuidP, nombres,
+                    apellidos, edad, enfermedad, nacimiento, habitacion, cama, horaAplicacion,
+                    medicamentoExtra)
 
-                listaPacientes.add(paciente)
+                listaPacientes.add(pacienteConMedicamento)
             }
             resultSet.close()
             statement.close()
@@ -98,5 +121,6 @@ class ListaPacientes : AppCompatActivity() {
 
         return listaPacientes
     }
+
 }
 

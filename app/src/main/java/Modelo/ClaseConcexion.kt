@@ -6,9 +6,9 @@ import java.sql.DriverManager
 class ClaseConcexion {
     fun CadenaConexion(): Connection?{
         try{
-            val ip="jdbc:oracle:thin:@192.168.3.4:1521:xe"
-            val usuario= "lacobraa"
-            val contrasena= "qatar24"
+            val ip="jdbc:oracle:thin:@192.168.1.22:1521:xe"
+            val usuario= "system"
+            val contrasena= "desarrollo"
             val conexion= DriverManager.getConnection(ip, usuario , contrasena)
             return conexion
         }catch (e:Exception){

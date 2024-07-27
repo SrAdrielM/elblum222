@@ -1,10 +1,14 @@
 package RecyclerViewHelpers
 
+import Modelo.ClaseConcexion
 import Modelo.dataClassPaciente
 import adrielmoreno.jaimeperla.hospitalbloom.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class Adaptador(var Datos: List<dataClassPaciente>): RecyclerView.Adapter<ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,6 +35,26 @@ class Adaptador(var Datos: List<dataClassPaciente>): RecyclerView.Adapter<ViewHo
         holder.icEditar.setOnClickListener {
 
         }
+    }
+
+    fun eliminarPaciente(nombre: String, position: Int) {
+        val listaProv = Datos.toMutableList()
+        listaProv.removeAt(position)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val objConexion = ClaseConcexion().CadenaConexion()
+            val eliminarProv = objConexion?.prepareStatement("delete from paciente where  UUID_Paciente = ?")!!
+            eliminarProv.setString(1, nombre)
+
+            eliminarProv.executeUpdate()
+
+            val commit = objConexion.prepareStatement("commit")
+            commit.executeUpdate()
+        }
+
+        Datos = listaProv.toList()
+        notifyItemRemoved(position)
+        notifyDataSetChanged()
     }
 
 }

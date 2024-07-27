@@ -26,6 +26,7 @@ class ListaPacientes : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_lista_pacientes)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -37,12 +38,23 @@ class ListaPacientes : AppCompatActivity() {
 
         rcvListaPacientes.layoutManager = LinearLayoutManager(this)
 
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val pacientesRCV = obtenerPacientes()
+            withContext(Dispatchers.Main) {
+                val adapter = Adaptador(pacientesRCV)
+                rcvListaPacientes.adapter = adapter
+            }
+        }
+
+
         btnAgregarPaciente.setOnClickListener {
             // Lógica para agregar un paciente
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -123,4 +135,40 @@ class ListaPacientes : AppCompatActivity() {
     }
 
 }
+
+
+    private fun obtenerPacientes(): List<dataClassPaciente> {
+        val objconexion = ClaseConcexion().CadenaConexion()
+        val statement = objconexion?.createStatement()
+        val resultSet = statement?.executeQuery(
+            "SELECT paciente.UUID_Paciente,paciente.Nombres, paciente.Apellidos, paciente.edad ,paciente.Efermedad, paciente.Fecha_Nacimiento, paciente.numero_habitacion, paciente.numero_cama, Medicamento.Nombre_medicamento, paciente.hora_aplicacion, paciente.medicamento_adiccional FROM paciente INNER JOIN Medicamento ON paciente.UUID_Medicamento = Medicamento.UUID_Medicamento;")!!
+
+        val listadoPacientes = mutableListOf<dataClassPaciente>()
+
+        resultSet.use { rs ->
+            while (rs.next()) {
+                val uuid = rs.getString("UUID_Paciente")
+                val nombres = rs.getString("Nombres")
+                val apellidos = rs.getString("Apellidos")
+                val edad = rs.getInt("Edad")
+                val enfermedad = rs.getString("Efermedad")
+                val nacimiento = rs.getString("Fecha_Nacimiento")
+                val habitacion = rs.getInt("numero_habitacion")
+                val cama = rs.getInt("numero_cama")
+                val medicamento = rs.getString("Nombre_medicamento")
+                val horaaplicacion = rs.getString("hora_aplicacion")
+                val medicamentoextra = rs.getString("medicamento_adiccional")
+
+                val paciente = dataClassPaciente(
+                    uuid, nombres, apellidos, edad, enfermedad, nacimiento, habitacion, cama,
+                    medicamento, horaaplicacion, medicamentoextra
+                )
+
+                listadoPacientes.add(paciente)
+            }
+        }
+
+        return listadoPacientes
+    }
+
 

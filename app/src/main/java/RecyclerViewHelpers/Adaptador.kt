@@ -5,6 +5,7 @@ import Modelo.dataClassCombinados
 import Modelo.dataClassPaciente
 import adrielmoreno.jaimeperla.hospitalbloom.R
 import android.app.AlertDialog
+import android.content.Context
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,13 +13,15 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
 
-class Adaptador(var Datos: List<dataClassCombinados>) : RecyclerView.Adapter<ViewHolder>() {
+class Adaptador(var Datos: List<dataClassCombinados>, private val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // Inflate the card layout
         val vista = LayoutInflater.from(parent.context).inflate(R.layout.activity_card, parent, false)
@@ -71,30 +74,33 @@ class Adaptador(var Datos: List<dataClassCombinados>) : RecyclerView.Adapter<Vie
         }
     }
 
-    fun eliminarPaciente(uuid_paciente: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+    private fun eliminarPaciente(uuid_paciente: String, position: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
                 val objConexion = ClaseConcexion().CadenaConexion()
-                val deletePaciente = objConexion?.prepareStatement("DELETE FROM paciente WHERE UUID_Paciente = ?")!!
-                deletePaciente.setString(1, uuid_paciente)
-                deletePaciente.executeUpdate()
+                val deletePaciente = objConexion?.prepareStatement("DELETE FROM paciente WHERE UUID_Paciente = ?")
+                deletePaciente?.setString(1, uuid_paciente)
+                deletePaciente?.executeUpdate()
 
                 // Commit the changes
-                val commit = objConexion.prepareStatement("COMMIT")
-                commit.executeUpdate()
+                val commit = objConexion?.prepareStatement("COMMIT")
+                commit?.executeUpdate()
 
                 // Update the UI
                 withContext(Dispatchers.Main) {
-                    val index = Datos.indexOfFirst { it.uuid_pacinete == uuid_paciente }
-                    if (index != -1) {
-                        Datos = Datos.toMutableList().apply {
-                            removeAt(index)
-                        }
-                        notifyItemRemoved(index)
+                    Datos = Datos.toMutableList().apply {
+                        removeAt(position)
                     }
+                    notifyItemRemoved(position)
                 }
             } catch (e: SQLException) {
-                e.printStackTrace()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error al eliminar el paciente: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error inesperado: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
@@ -109,7 +115,7 @@ class Adaptador(var Datos: List<dataClassCombinados>) : RecyclerView.Adapter<Vie
         holder.txtMedicamentoCard.text = item.Nombre_medicamento
 
         holder.icBorrar.setOnClickListener {
-            eliminarPaciente(item.uuid_pacinete)
+            eliminarPaciente(item.uuid_pacinete, position)
         }
 
         holder.icEditar.setOnClickListener {
@@ -178,3 +184,4 @@ class Adaptador(var Datos: List<dataClassCombinados>) : RecyclerView.Adapter<Vie
         }
     }
 }
+

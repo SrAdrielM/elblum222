@@ -116,22 +116,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/icEliminar"
-            android:layout_width="187dp"
-            android:layout_height="70dp"
-            android:padding="20dp"
-            app:srcCompat="@drawable/eliminar" />
-
-        <ImageView
-            android:id="@+id/icEditar"
-            android:layout_width="80dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:padding="20dp"
-            app:srcCompat="@drawable/editar" />
-    </LinearLayout>
+        android:orientation="horizontal"/>
 
 </LinearLayout>

@@ -22,11 +22,11 @@
 
     <Button
         android:id="@+id/btnMedeicamento"
-        android:layout_width="114dp"
-        android:layout_height="54dp"
-        android:background="@drawable/btn_degradado"
+        android:layout_width="137dp"
+        android:layout_height="53dp"
+        android:backgroundTint="#36A1FF"
         android:text="nuevo medicamento"
-        android:textColor="#2E2E2E"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.926"
@@ -230,6 +230,7 @@
                 android:id="@+id/btnAgregarPaciente"
                 android:layout_width="139dp"
                 android:layout_height="63dp"
+                android:backgroundTint="#36A1FF"
                 android:text="Agregar"
                 android:textSize="20sp"
                 android:translationX="132dp" />

@@ -49,8 +49,40 @@ class MainActivity : AppCompatActivity() {
         val btnAgregarPacientes = findViewById<Button>(R.id.btnAgregarPaciente)
         val btnAgregarMedicamentos = findViewById<Button>(R.id.btnMedeicamento)
 
+
+        btnAgregarMedicamentos.setOnClickListener {
+
+        }
+
         txtFechaNacimiento.inputType = InputType.TYPE_NULL
         txtFechaNacimiento.setOnClickListener {
+            val calendario = Calendar.getInstance()
+            val anio = calendario.get(Calendar.YEAR)
+            val mes = calendario.get(Calendar.MONTH)
+            val dia = calendario.get(Calendar.DAY_OF_MONTH)
+
+            // Fecha mínima (16 años atrás desde hoy)
+            val fechaMinima = Calendar.getInstance()
+            fechaMinima.set(anio - 16, mes, dia)
+
+            // Fecha máxima (hoy)
+            val fechaMaxima = Calendar.getInstance()
+            fechaMaxima.set(anio, mes, dia)
+
+            val datePickerDialog = DatePickerDialog(
+                this, // Cambiado a 'this' ya que estamos en una actividad
+                { _, anioSeleccionado, mesSeleccionado, diaSeleccionado ->
+                    val fechaSeleccionada = "$diaSeleccionado/${mesSeleccionado + 1}/$anioSeleccionado"
+                    txtFechaNacimiento.setText(fechaSeleccionada)
+                },
+                anio, mes, dia
+            )
+
+            // Establecer los límites del DatePicker
+            datePickerDialog.datePicker.minDate = fechaMinima.timeInMillis
+            datePickerDialog.datePicker.maxDate = fechaMaxima.timeInMillis
+
+            datePickerDialog.show()
         }
 
         icRegresar.setOnClickListener {
@@ -73,14 +105,14 @@ class MainActivity : AppCompatActivity() {
                        val objConexion = ClaseConcexion().CadenaConexion()
                        val medicina = getMedicina()
 
-                       val addPaciente = objConexion?.prepareStatement("INSERT INTO pacientee (UUID_Paciente, Nombres, Apellidos, Edad, Efermedad, Fecha_Nacimiento, numero_habitacion, numero_cama, UUID_Medicamento, hora_aplicacio, medicamento_adiccional)VALUES (?,?,?,?,?,?,?,?,?,?,?)")!!
+                       val addPaciente = objConexion?.prepareStatement("INSERT INTO paciente (UUID_Paciente, Nombres, Apellidos, Edad, Efermedad, Fecha_Nacimiento, numero_habitacion, numero_cama, UUID_Medicamento, hora_aplicacio, medicamento_adiccional)VALUES (?,?,?,?,?,?,?,?,?,?,?)")!!
                        addPaciente.setString(1, UUID.randomUUID().toString())
                        addPaciente.setString(2,txtNombresPaciente.text.toString())
                        addPaciente.setString(3,txtApellidos.text.toString())
                        addPaciente.setInt(4,txtedad.text.toString().toInt())
                        addPaciente.setString(5,txtEnfermedad.text.toString())
                        addPaciente.setString(6,txtFechaNacimiento.text.toString())
-                       addPaciente.setString(7,txtNumerohabitacion.text.toString())
+                       addPaciente.setInt(7,txtNumerohabitacion.text.toString().toInt())
                        addPaciente.setInt(8,txtnumeroCama.text.toString().toInt())
                        addPaciente.setString(9,medicina[spMedicamento.selectedItemPosition].UUID_Medicamento)
                        addPaciente.setString(10,txtAplicaion.text.toString())

@@ -1,13 +1,14 @@
 package Modelo
 
 data class dataClassPaciente(
-    val nombres: String,
-    val apellidos: String,
-    val edad: String,
-    val añoNacimiento: String,
-    val enfermedad: String,
-    val habitacion: String,
-    val cama: String,
-    val horaAplicacion : String,
-    val medExtra : String
+    var uuid_pacinete : String,
+    var nombres: String,
+    var apellidos: String,
+    var edad: String,
+    var añoNacimiento: String,
+    var enfermedad: String,
+    var habitacion: Int,
+    var cama: Int,
+    var horaAplicacion : String,
+    var medExtra : String
 )

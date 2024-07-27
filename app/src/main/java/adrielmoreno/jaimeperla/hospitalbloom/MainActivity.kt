@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity() {
         val btnAgregarPacientes = findViewById<Button>(R.id.btnAgregarPaciente)
         val btnAgregarMedicamentos = findViewById<Button>(R.id.btnMedeicamento)
 
+
+
         GlobalScope.launch(Dispatchers.IO) {
             val listadoMedicina = Medicina()
             val nombreMedicina = listadoMedicina.map { it.Nombre_medicamento }
@@ -115,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         val objConexion = ClaseConcexion().CadenaConexion()
                         val medicina = Medicina()
 
-                        val addPaciente = objConexion?.prepareStatement("INSERT INTO paciente (UUID_Paciente, Nombres, Apellidos, Edad, Efermedad, Fecha_Nacimiento, numero_habitacion, numero_cama, UUID_Medicamento, hora_aplicacio, medicamento_adiccional) VALUES (?,?,?,?,?,?,?,?,?,?,?)")!!
+                        val addPaciente = objConexion?.prepareStatement("INSERT INTO paciente (UUID_Paciente, Nombres, Apellidos, Edad, Efermedad, Fecha_Nacimiento, numero_habitacion, numero_cama, UUID_Medicamento, hora_aplicacion, medicamento_adiccional) VALUES (?,?,?,?,?,?,?,?,?,?,?)")!!
                         addPaciente.setString(1, UUID.randomUUID().toString())
                         addPaciente.setString(2, txtNombresPaciente.text.toString())
                         addPaciente.setString(3, txtApellidos.text.toString())
@@ -132,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(
                                 this@MainActivity,
-                                "Cita agendada exitosamente.",
+                                "Paciente creado exitosamente.",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -140,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(
                                 this@MainActivity,
-                                "Error al agendar la cita: ${e.message}",
+                                "Error al crear el Paciente: ${e.message}",
                                 Toast.LENGTH_LONG
                             ).show()
                         }

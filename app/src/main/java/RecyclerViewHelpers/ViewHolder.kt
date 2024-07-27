@@ -13,5 +13,4 @@ class ViewHolder (view: View): RecyclerView.ViewHolder(view) {
     val txtMedicamentoCard = view.findViewById<TextView>(R.id.txtMedicamentoCard)
     val icEditar =view.findViewById<TextView>(R.id.icEditar)
     val icBorrar = view.findViewById<TextView>(R.id.icBorrar)
-
 }

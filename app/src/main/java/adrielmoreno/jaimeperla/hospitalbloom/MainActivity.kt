@@ -96,6 +96,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
+
         btnAgregarPacientes.setOnClickListener {
             if (txtNombresPaciente.text.toString().isEmpty() || txtApellidos.text.toString()
                     .isEmpty() || txtedad.text.toString()

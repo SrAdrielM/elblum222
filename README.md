@@ -34,6 +34,11 @@ FOREIGN KEY (UUID_Paciente)
 REFERENCES paciente(UUID_Paciente) 
 );
 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--apartado de inserciones
+
+
 INSERT INTO Medicamento (UUID_Medicamento, Nombre_medicamento) VALUES 
 
 (SYS_GUID(), 'Amoxicilina');
@@ -46,7 +51,11 @@ INSERT INTO paciente (UUID_Paciente, Nombres, Apellidos, Edad, Efermedad, Fecha_
 VALUES 
 (SYS_GUID(), 'Juan', 'Pérez', 12, 'Gripe', '1993-01-15', 2, 1, 'AA2B9DDA1FBD4D4AADCC1BC33B8847F1', '08:00', 'Gotas para ojos');
 
+INSERT INTO detalle_PacienteMedicamentoos (UUID_Paciente, UUID_Medicamento)
+VALUES 
+('F119A9AD73414BEBB0C152D8FFE63F18','AA2B9DDA1FBD4D4AADCC1BC33B8847F1');
 
 select * from medicamento;
 
 select * from paciente;
+select * from detalle_PacienteMedicamentoos;

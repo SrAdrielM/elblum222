@@ -1,6 +1,8 @@
 package adrielmoreno.jaimeperla.hospitalbloom
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +37,11 @@ class pacienteInfo : AppCompatActivity() {
         val txtmedicamentos = findViewById<TextView>(R.id.txtMedicamento1Show)
         val txtHoraAplicar = findViewById<TextView>(R.id.txtHoraMed1Show)
         val txtmedExtra = findViewById<TextView>(R.id.txtInfoExtraShow)
+        val imgregresa = findViewById<ImageView>(R.id.imgRegresarAmain)
+        imgregresa.setOnClickListener {
+            val intent = Intent(this, ListaPacientes::class.java)
+            startActivity(intent)
+        }
 
         txtNombres.text=nombres
         txtApellidos.text=apellidos

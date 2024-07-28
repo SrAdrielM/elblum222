@@ -222,6 +222,7 @@
                     android:background="@drawable/border"
                     android:ems="10"
                     android:gravity="start|top"
+                    android:hint="favor si no se pone medicamento poner ¨nada ¨ para el buen funcionamiento de la app"
                     android:inputType="textMultiLine"
                     android:textSize="14sp" />
             </LinearLayout>

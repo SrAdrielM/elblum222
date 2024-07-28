@@ -1,7 +1,7 @@
 package Modelo
 
 data class dataClassPaciente(
-    var uuid_pacinete : String,
+    var uuid_paciente: String,
     var nombres: String,
     var apellidos: String,
     var edad: Int,
@@ -9,7 +9,7 @@ data class dataClassPaciente(
     var enfermedad: String,
     var habitacion: Int,
     var cama: Int,
-    var medicamento :String,
-    var horaAplicacion : String,
-    var medExtra : String
+    var uuid_medicamento: String,
+    var horaAplicacion: String,
+    var medExtra: String
 )

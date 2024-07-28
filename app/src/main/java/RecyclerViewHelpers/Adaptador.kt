@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.sql.SQLException
 
-class Adaptador(var Datos: List<dataClassCombinados>, private val context: Context) : RecyclerView.Adapter<ViewHolder>() {
+class Adaptador(var Datos: List<dataClassPaciente>, private val context: Context) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // Inflate the card layout
@@ -49,9 +49,9 @@ class Adaptador(var Datos: List<dataClassCombinados>, private val context: Conte
                 val commit = objConexion.prepareStatement("COMMIT")
                 commit.executeUpdate()
 
-                // Update the UI
+
                 withContext(Dispatchers.Main) {
-                    val index = Datos.indexOfFirst { it.uuid_pacinete == uuid_paciente }
+                    val index = Datos.indexOfFirst { it.uuid_paciente == uuid_paciente }
                     if (index != -1) {
                         val updatedPacienteitem = Datos[index].copy(
                             nombres = nuevoNombre,
@@ -112,10 +112,10 @@ class Adaptador(var Datos: List<dataClassCombinados>, private val context: Conte
         holder.txtApellidosCard.text = item.apellidos
         holder.txtMedicamentoCardHora.text = item.horaAplicacion
         holder.txtEnfermedadCard.text = item.enfermedad
-        holder.txtMedicamentoCard.text = item.Nombre_medicamento
+        holder.txtMedicamentoCard.text = item.uuid_medicamento
 
         holder.icBorrar.setOnClickListener {
-            eliminarPaciente(item.uuid_pacinete, position)
+            eliminarPaciente(item.uuid_paciente, position)
         }
 
         holder.icEditar.setOnClickListener {
@@ -171,7 +171,7 @@ class Adaptador(var Datos: List<dataClassCombinados>, private val context: Conte
                 if (nombreNuevo.isBlank() || apellidoNuevo.isBlank() || horaNuevaMedicamento.isBlank() || enfermedadNueva.isBlank() || habitacionNueva == 0 || camaNueva == 0) {
                     Toast.makeText(holder.itemView.context, "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show()
                 } else {
-                    actualizarPaciente(item.uuid_pacinete, nombreNuevo, apellidoNuevo, horaNuevaMedicamento, edadNueva, enfermedadNueva, habitacionNueva, camaNueva)
+                    actualizarPaciente(item.uuid_paciente, nombreNuevo, apellidoNuevo, horaNuevaMedicamento, edadNueva, enfermedadNueva, habitacionNueva, camaNueva)
                 }
             }
 

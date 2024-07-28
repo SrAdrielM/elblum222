@@ -1,9 +1,8 @@
 package adrielmoreno.jaimeperla.hospitalbloom
 
 import Modelo.ClaseConcexion
-import Modelo.dataClassCombinados
 import Modelo.dataClassPaciente
-import RecyclerViewHelpers.Adaptador
+import RecyclerViewHelpers.AdaptadorPacientes
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.sql.SQLException
 
 class ListaPacientes : AppCompatActivity() {
 
@@ -35,74 +33,32 @@ class ListaPacientes : AppCompatActivity() {
 
         val btnAgregarPaciente = findViewById<Button>(R.id.btnAgregar)
         val rcvListaPacientes = findViewById<RecyclerView>(R.id.rcvPacientes)
-
         rcvListaPacientes.layoutManager = LinearLayoutManager(this)
 
-
         CoroutineScope(Dispatchers.IO).launch {
-            val pacientesRCV = obtenerPacientes()
+            val pacientesDB = obtenerPacientesCard()
             withContext(Dispatchers.Main) {
-                val adapter = Adaptador(pacientesRCV)
+                val adapter = AdaptadorPacientes(pacientesDB)
                 rcvListaPacientes.adapter = adapter
             }
         }
 
-
         btnAgregarPaciente.setOnClickListener {
-            // Lógica para agregar un paciente
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }
 
+    private fun obtenerPacientesCard(): List<dataClassPaciente> {
+        val objconexion = ClaseConcexion().CadenaConexion()
+        val statement = objconexion?.createStatement()
+        val resultSet = statement?.executeQuery("SELECT paciente.UUID_Paciente,paciente.Nombres, paciente.Apellidos, paciente.edad ,paciente.Efermedad, paciente.Fecha_Nacimiento, paciente.numero_habitacion, paciente.numero_cama, Medicamento.Nombre_medicamento, paciente.hora_aplicacion, paciente.medicamento_adiccional FROM paciente INNER JOIN Medicamento ON paciente.UUID_Medicamento = Medicamento.UUID_Medicamento")!!
 
-    override fun onResume() {
-        super.onResume()
-        cargarPacientes()
-    }
+        val listadoPacientes = mutableListOf<dataClassPaciente>()
 
-    private fun cargarPacientes() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val pacientesList = obtenerPacientes()
-            withContext(Dispatchers.Main) {
-                val adaptador = Adaptador(pacientesList)
-                val rcvPacientes = findViewById<RecyclerView>(R.id.rcvPacientes)
-                rcvPacientes.adapter = adaptador
-            }
-        }
-    }
-
-    private fun obtenerPacientes(): List<dataClassCombinados> {
-        val objConexion = ClaseConcexion().CadenaConexion() ?: return emptyList()
-        val listaPacientes = mutableListOf<dataClassCombinados>()
-
-        try {
-            val statement = objConexion.createStatement()
-            val resultSet = statement.executeQuery("""
-            SELECT 
-                p.UUID_Paciente,
-                p.Nombres,
-                p.Apellidos,
-                p.Edad,
-                p.Efermedad,
-                p.Fecha_Nacimiento,
-                p.numero_habitacion,
-                p.numero_cama,
-                m.Nombre_medicamento,
-                p.hora_aplicacion,
-                p.medicamento_adiccional
-            FROM 
-                paciente p
-            INNER JOIN 
-                Medicamento m
-            ON 
-                p.UUID_Medicamento = m.UUID_Medicamento
-        """)
-
-            while (resultSet.next()) {
-                val uuidM = resultSet.getString("UUID_Medicamento")
-                val nombreMedicamento = resultSet.getString("Nombre_medicamento")
-                val uuidP = resultSet.getString("UUID_Paciente")
+        while (resultSet.next()) {
+            try {
+                val uuid = resultSet.getString("UUID_Paciente")
                 val nombres = resultSet.getString("Nombres")
                 val apellidos = resultSet.getString("Apellidos")
                 val edad = resultSet.getInt("Edad")
@@ -110,65 +66,28 @@ class ListaPacientes : AppCompatActivity() {
                 val nacimiento = resultSet.getString("Fecha_Nacimiento")
                 val habitacion = resultSet.getInt("numero_habitacion")
                 val cama = resultSet.getInt("numero_cama")
-                val horaAplicacion = resultSet.getString("hora_aplicacion")
-                val medicamentoExtra = resultSet.getString("medicamento_adiccional")
-
-                val pacienteConMedicamento = dataClassCombinados(uuidM, nombreMedicamento, uuidP, nombres,
-                    apellidos, edad, enfermedad, nacimiento, habitacion, cama, horaAplicacion,
-                    medicamentoExtra)
-
-                listaPacientes.add(pacienteConMedicamento)
-            }
-            resultSet.close()
-            statement.close()
-        } catch (e: SQLException) {
-            Log.e("obtenerPacientes", "Error al obtener pacientes: ${e.message}")
-        } finally {
-            try {
-                objConexion.close()
-            } catch (e: SQLException) {
-                Log.e("obtenerPacientes", "Error al cerrar la conexión: ${e.message}")
-            }
-        }
-
-        return listaPacientes
-    }
-
-}
-
-
-    private fun obtenerPacientes(): List<dataClassPaciente> {
-        val objconexion = ClaseConcexion().CadenaConexion()
-        val statement = objconexion?.createStatement()
-        val resultSet = statement?.executeQuery(
-            "SELECT paciente.UUID_Paciente,paciente.Nombres, paciente.Apellidos, paciente.edad ,paciente.Efermedad, paciente.Fecha_Nacimiento, paciente.numero_habitacion, paciente.numero_cama, Medicamento.Nombre_medicamento, paciente.hora_aplicacion, paciente.medicamento_adiccional FROM paciente INNER JOIN Medicamento ON paciente.UUID_Medicamento = Medicamento.UUID_Medicamento;")!!
-
-        val listadoPacientes = mutableListOf<dataClassPaciente>()
-
-        resultSet.use { rs ->
-            while (rs.next()) {
-                val uuid = rs.getString("UUID_Paciente")
-                val nombres = rs.getString("Nombres")
-                val apellidos = rs.getString("Apellidos")
-                val edad = rs.getInt("Edad")
-                val enfermedad = rs.getString("Efermedad")
-                val nacimiento = rs.getString("Fecha_Nacimiento")
-                val habitacion = rs.getInt("numero_habitacion")
-                val cama = rs.getInt("numero_cama")
-                val medicamento = rs.getString("Nombre_medicamento")
-                val horaaplicacion = rs.getString("hora_aplicacion")
-                val medicamentoextra = rs.getString("medicamento_adiccional")
+                val medicamento = resultSet.getString("Nombre_medicamento")
+                val horaaplicacion = resultSet.getString("hora_aplicacion")
+                val medicamentoextra = resultSet.getString("medicamento_adiccional")
 
                 val paciente = dataClassPaciente(
-                    uuid, nombres, apellidos, edad, enfermedad, nacimiento, habitacion, cama,
-                    medicamento, horaaplicacion, medicamentoextra
+                    uuid,
+                    nombres,
+                    apellidos,
+                    edad,
+                    nacimiento,
+                    enfermedad,
+                    habitacion,
+                    cama,
+                    medicamento,
+                    horaaplicacion,
+                    medicamentoextra
                 )
-
                 listadoPacientes.add(paciente)
+            } catch (e: Exception) {
+                Log.e("Paciente", "Error fetching paciente data", e)
             }
         }
-
         return listadoPacientes
     }
-
-
+}

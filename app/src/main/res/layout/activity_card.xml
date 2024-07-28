@@ -152,19 +152,19 @@
 
             <ImageView
                 android:id="@+id/icBorrar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
-                android:src="@drawable/baseline_delete_outline_24" />
+                android:src="@drawable/eliminar" />
 
             <ImageView
                 android:id="@+id/icEditar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="end"
                 android:layout_marginTop="4dp"
-                android:src="@drawable/ic_editar_24" />
+                android:src="@drawable/editar" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity() {
 
 
         btnAgregarPacientes.setOnClickListener {
+            val edad = txtedad.text.toString().toIntOrNull()
             if (txtNombresPaciente.text.toString().isEmpty() || txtApellidos.text.toString()
                     .isEmpty() || txtedad.text.toString()
                     .isEmpty() || txtFechaNacimiento.text.toString()
@@ -109,6 +110,12 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(
                     this@MainActivity,
                     "Por favor, complete todos los campos.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (edad == null || edad > 16) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "La edad debe ser menor o igual a 16 años.",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
